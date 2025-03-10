@@ -1,17 +1,17 @@
 package plugin.oreMining;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import plugin.oreMining.command.OreMiningCommand;
 
 public final class Main extends JavaPlugin {
 
   @Override
   public void onEnable() {
-    // Plugin startup logic
+    OreMiningCommand oreMiningCommand = new OreMiningCommand(this);
+    Bukkit.getPluginManager().registerEvents(oreMiningCommand, this);
 
-  }
-
-  @Override
-  public void onDisable() {
-    // Plugin shutdown logic
+    getCommand("oreMining").setExecutor(oreMiningCommand);
   }
 }
