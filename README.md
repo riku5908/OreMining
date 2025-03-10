@@ -66,12 +66,31 @@ https://github.com/user-attachments/assets/a49e29a3-70d8-48d7-8092-c043f586e8c1
 ## データベース構成
 テーブル：player_score
 
-| カラム名 | 説明 |
+| 属性 | 設定値 |
 | --- | --- |
-| id | 主キー、自動採番 |
-| player_name | プレイヤー名 |
-| score | スコア |
-| registered_at | 登録日時 |
+| ユーザー名 | ※ |
+| パスワード | ※ |
+| URL | ※ |
+| データベース名 | ore_mining |
+| テーブル名 | player_score |
+
+（※）は自身のローカル環境に合わせてご使用ください。(mybatis-config.xmlで設定します)
+
+## データベースの接続方法
+1. 自身のローカル環境でMySQLに接続してください。
+2. 以下のコマンドを順に実行してください。
+
+```
+CREATE DATABASE ore_mining;
+```
+
+```
+USE ore_mining;
+```
+
+```
+CREATE TABLE player_score(id int auto_increment, player_name varchar(100), score int, registered_at datetime, primary key(id)) DEFAULT CHARSET=utf8;
+```
 
 ## 今後　実装予定の機能
 ・強制テレポート：ゲーム開始コマンドを入力後、採掘場にテレポートする。
