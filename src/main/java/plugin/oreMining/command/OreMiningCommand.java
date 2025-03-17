@@ -1,22 +1,10 @@
 package plugin.oreMining.command;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.SplittableRandom;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,7 +22,6 @@ import org.bukkit.potion.PotionEffect;
 import plugin.oreMining.Main;
 import plugin.oreMining.PlayerScoreData;
 import plugin.oreMining.data.ExecutingPlayer;
-import plugin.oreMining.mapper.PlayerScoreMapper;
 import plugin.oreMining.mapper.data.PlayerScore;
 
 
@@ -47,6 +34,8 @@ public class OreMiningCommand extends BaseCommand implements Listener {
 
   public static final int GAME_TIME = 30;
   private static final String LIST = "list";
+  public static final int L = 1;
+  public static final int L_1 = 21;
   private final Main main;
   private final PlayerScoreData playerScoreData = new PlayerScoreData();
   private final List<ExecutingPlayer> executingPlayerList = new ArrayList<>();
@@ -65,7 +54,7 @@ public class OreMiningCommand extends BaseCommand implements Listener {
     }
 
     if (args.length == 0){
-      ExecutingPlayer nowPlayerScore = getPlayerScore(player);
+      ExecutingPlayer nowPlayerScore = getPlayerData(player);
 
       World world = player.getWorld();
 
@@ -178,10 +167,10 @@ public class OreMiningCommand extends BaseCommand implements Listener {
       }
 
       if (timeLeft == 30){
-        OreSpawnLocation(player, world);
+        oreSpawnLocation(player, world);
       }
       nowPlayerScore.setGameTime(timeLeft -1);
-    },1, 21);
+    }, L, L_1);
   }
 
   /**
@@ -208,7 +197,7 @@ public class OreMiningCommand extends BaseCommand implements Listener {
    * @param player　コマンドを実行したプレイヤー
    * @return 現在実行しているプレイヤーのスコア情報
    */
-  private ExecutingPlayer getPlayerScore(Player player) {
+  private ExecutingPlayer getPlayerData(Player player) {
     ExecutingPlayer executingPlayer = new ExecutingPlayer(player.getName());
     if (executingPlayerList.isEmpty()){
        executingPlayer = addNewPlayer(player);
@@ -243,7 +232,7 @@ public class OreMiningCommand extends BaseCommand implements Listener {
    * @param player 鉱石をスポーンさせる基準となるプレイヤー
    * @param world  ブロックを配置するワールド
    */
-private void OreSpawnLocation(Player player, World world) {
+private void oreSpawnLocation(Player player, World world) {
   Location playerLocation = player.getLocation();
   double x = playerLocation.getX();
   double y = playerLocation.getY();
@@ -252,23 +241,27 @@ private void OreSpawnLocation(Player player, World world) {
   // ランダムオブジェクトを作成
   SplittableRandom random = new SplittableRandom();
 
-  // 6×6×6 の範囲で鉱石を生成
-  for (int i = 0; i <= 5; i++) {
-    for (int j = 0; j <= 5; j++) {
-      for (int k = 0; k <= 5; k++) {
-        int chance = random.nextInt(100);
-        Material oreType = getMaterial(chance);
-        System.out.println("生成された鉱石: " + oreType);
+  generateOres(world, random, x, y, z);
+}
 
-        Location oreLocation = new Location(world, x + i + 5, y + j, z + k + 5);
-        world.getBlockAt(oreLocation).setType(oreType);
+  private void generateOres(World world, SplittableRandom random, double x, double y, double z) {
+    // 6×6×6 の範囲で鉱石を生成
+    for (int i = 0; i <= 5; i++) {
+      for (int j = 0; j <= 5; j++) {
+        for (int k = 0; k <= 5; k++) {
+          int chance = random.nextInt(100);
+          Material oreType = getMaterial(chance);
+          System.out.println("生成された鉱石: " + oreType);
 
-        generatedOreLocations.add(oreLocation);
+          Location oreLocation = new Location(world, x + i + 5, y + j, z + k + 5);
+          world.getBlockAt(oreLocation).setType(oreType);
 
+          generatedOreLocations.add(oreLocation);
+
+        }
       }
     }
   }
- }
 
   /**
    * ゲーム終了後に出現させたブロックを削除します。
