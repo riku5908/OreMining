@@ -110,6 +110,5 @@ CREATE TABLE player_score(id int auto_increment, player_name varchar(100), score
 ## おわりに
 ・Java学習者のアウトプットとして、リポジトリ公開させていただきました。
 
-・感想・コメント等ございましたら、Xアカウントまでご連絡いただけますと幸いです。
-
+・感想、コメント等ございましたら、Xアカウントまでご連絡いただけますと幸いです。
 　：https://x.com/RK4111719290707
